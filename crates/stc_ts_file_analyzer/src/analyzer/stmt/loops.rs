@@ -138,6 +138,12 @@ impl Analyzer<'_, '_> {
                             if err.is_assign_failure() {
                                 return ErrorKind::WrongTypeForLhsOfForInLoop { span: err.span() };
                             }
+
+                            if let ErrorKind::Errors { span, errors } = &err {
+                                if errors.iter().any(|e| e.is_assign_failure()) {
+                                    return ErrorKind::WrongTypeForLhsOfForInLoop { span: *span };
+                                }
+                            }
                         }
 
                         err
